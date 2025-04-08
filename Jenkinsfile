@@ -6,7 +6,8 @@ pipeline {
             steps {
                 script {
                     // Create a file named paisalo and write "It is a bank" to it
-                    writeFile file: 'paisalo', text: 'It is a bank'
+                    touch paisalo
+                    echo "hello this is a bank" >> paisalo
                 }
             }
         }
