@@ -2,24 +2,34 @@ pipeline {
     agent any
 
     stages {
-        stage('Create File') {
+        stage('Checkout') {
             steps {
                 script {
-                    // Create a file named paisalo and write "It is a bank" to it
-                    touch paisalo
-                    echo "hello this is a bank" >> paisalo
+                    // Clone the repository or check out the source code
+                    checkout scm
                 }
             }
         }
 
-        stage('Verify File Creation') {
+        stage('Remove Git') {
             steps {
                 script {
-                    // Print the content of the file to the Jenkins console
-                    def content = readFile('paisalo')
-                    echo "File content: ${content}"
+                    // Remove the .git directory from the workspace
+                    def gitDir = "${env.WORKSPACE}/.git"
+                    if (fileExists(gitDir)) {
+                        echo "Removing Git directory..."
+                        deleteDir()  // Deletes the entire workspace, including the .git folder
+                    } else {
+                        echo "No Git repository found to remove."
+                    }
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            echo 'Cleaning up the workspace.'
         }
     }
 }
